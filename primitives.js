@@ -8,10 +8,17 @@ var LINE_COLOR = 'red';
 
 var DEG_PER_RAD = 360 / (2 * Math.PI);
 
+// Used t oemulate infinity for lines
+var FAR_AWAY = 1000;
+
 
 cg = {
     Plane: fabric.util.createClass(fabric.Canvas, {
         initialize: function(element_id, options) {
+            options = options || {};
+
+            options.selection = options.selection || false;
+
             // Center the origin
             options.originX = 'center';
             options.originY = 'center';
@@ -60,6 +67,10 @@ cg = {
         */
 
         // Set of functions to translate coordinates
+        // These are marked with a _ because we really shouldn't have to
+        // call them externally, the plane should be able to scale objects
+        // to its own coordinate system. Unfortunately this is too much work
+        // TODO right now.
         _planeX: function(nativeX) { 
             return nativeX * (this._xRange / this.width) + this._minX;
         },
@@ -115,23 +126,26 @@ cg = {
 
             // Disable line scaling
             options.hasBorders = false;
-            options.hasControls = false;
+            options.hasControls = true;
+            options.hasRotatingPoint = true;
             options.lockScalingX = true;
             options.lockScalingY = true;
+            options.lockMovementX = true;
+            options.selectable = true;
 
             // Rotate the line about its center
             options.centerRotation = true;
             options.originX = 'center';
             options.orignY = 'center';
 
-            // Set the visual style
+            // Set the visual style);
             options.fill = options.fill || LINE_COLOR;
             options.stroke = options.stroke || LINE_COLOR;
             options.strokeWidth = options.strokeWidth || LINE_WIDTH;
 
             this.callSuper(
                 'initialize', 
-                [centerX-10000, centerY, centerX+10000, centerY], 
+                [centerX-FAR_AWAY, centerY, centerX+FAR_AWAY, centerY], 
                 options
             );
 
@@ -143,21 +157,22 @@ cg = {
         },
 
         setSlope: function(slope) {
-            this._slope = slope;
             this.setAngle(Math.atan(slope) * DEG_PER_RAD);
 
             return this; // For utility
         },
 
-        setIntercept: function(intercept) {
-            this._intercept = intercept;
-            this.setPositionByOrigin(
-                new fabric.Point(this._centerX, intercept),
-                'center',
-                'center'
-            );
+        getSlope: function(slope) {
+            return Math.tan(this.angle / DEG_PER_RAD);
+        },
 
+        setIntercept: function(intercept) {
+            this.top = intercept
             return this;
+        },
+
+        getIntercept: function() {
+            return this.top;
         },
 
         toString: function() {

@@ -5,7 +5,14 @@ var next_key = 0;
 
 var mapping = [];
 
+var primal_color_picker;
+var dual_color_picker;
+
 document.body.onload = function() {
+    // Grab refs to the color pickers
+    primal_color_picker = document.getElementById('primal-color');
+    dual_color_picker = document.getElementById('dual-color');
+
     // Set up the canvases
     primal_plane = new cg.Plane(
         'primal-plane',
@@ -26,6 +33,10 @@ document.body.onload = function() {
         }
     );
 
+    // TODO something better than this
+    primal_plane.picker = primal_color_picker;
+    dual_plane.picker = dual_color_picker;
+
     // For some reason, the layout gets a bit screwed up when we construct
     // the canvases, so we need to do this our our offsets will be all wrong
     primal_plane.calcOffset();
@@ -37,10 +48,11 @@ document.body.onload = function() {
     });
 
     primal_plane.on('object:moving', function(e) {
-        object = primal_plane.getActiveObject();
-        if (object instanceof cg.Point) {
-            moved_point(object);
-        }
+        translation_handler(e, primal_plane);
+    });
+
+    primal_plane.on('object:rotating', function(e) {
+        translation_handler(e, primal_plane);
     });
 
     dual_plane.on('mouse:miss', function(e) {
@@ -48,21 +60,35 @@ document.body.onload = function() {
     });
 
     dual_plane.on('object:moving', function(e) {
-        object = dual_plane.getActiveObject();
-        if (object instanceof cg.Point) {
-            moved_point(object);
-        }
+        translation_handler(e, dual_plane);
     });
 
+    dual_plane.on('object:rotating', function(e) {
+        translation_handler(e, dual_plane);
+    });
+}
+
+function translation_handler(e, plane) {
+    object = plane.getActiveObject();
+    if (object instanceof cg.Point) {
+        moved_point(object);
+    } else if (object instanceof cg.Line) {
+        moved_line(object);
+    }
 }
 
 
 function add_point_and_line(x, y, point_plane, line_plane) {
-    var point = new cg.Point(x, y);
+    var point = new cg.Point(x, y, {
+        fill: point_plane.picker.value    
+    });
     point.key = next_key;
     point_plane.add(point);
 
-    var line = new cg.Line(0, line_plane._nativeX(0), line_plane._nativeY(0));
+    var line = new cg.Line(0, line_plane._nativeX(0), line_plane._nativeY(0), {
+        stroke: point_plane.picker.value,
+        fill: point_plane.picker.value    
+    });
     line.key = next_key;
     line_plane.add(line);
 
@@ -93,6 +119,22 @@ function moved_point(point) {
 
     line.setSlope(slope).setIntercept(intercept);
     // Unfortunately this is the only way to get updates as we drag a point,
-    // and it's pretty slow on my machine.
+    // and it's pretty slow on my machine using FF.
     line_plane.renderAll();
+}
+
+function moved_line(line) {
+    var entry = mapping[line.key];
+    var point = entry.point;
+    var point_plane = entry.point_plane;
+    var line_plane = entry.line_plane;
+
+    var slope = line.getSlope();
+    var intercept = line_plane._planeY(line.getIntercept());
+    console.log("Slope:", slope);
+
+    point.setLeft(point_plane._nativeX(slope));
+    point.setTop(point_plane._nativeY(-intercept));
+
+    point_plane.renderAll();
 }
