@@ -51,6 +51,14 @@ cg = {
             });
         },
 
+        // Override
+        /*
+        add: function(object) {
+            // TODO see if we can do any good here
+            this.callSuper('add', object);
+        },
+        */
+
         // Set of functions to translate coordinates
         _planeX: function(nativeX) { 
             return nativeX * (this._xRange / this.width) + this._minX;
@@ -102,6 +110,7 @@ cg = {
 
     Line: fabric.util.createClass(fabric.Line, {
         initialize: function(slope, centerX, centerY, options) {
+            // TODO remove centerX entirely!
             options = options || {};
 
             // Disable line scaling
@@ -110,10 +119,8 @@ cg = {
             options.lockScalingX = true;
             options.lockScalingY = true;
 
-            // Rotate the line to match the slope
-            options.angle = Math.atan(slope) * DEG_PER_RAD;
+            // Rotate the line about its center
             options.centerRotation = true;
-
             options.originX = 'center';
             options.orignY = 'center';
 
@@ -128,8 +135,29 @@ cg = {
                 options
             );
 
-            this.slope = slope;
-            this.intercept = centerY;
+            this._centerX = centerX;
+            //this.setSlope(slope).setIntercept(centerY);
+            this.setSlope(slope);
+            //this.setIntercept(centerY);
+
+        },
+
+        setSlope: function(slope) {
+            this._slope = slope;
+            this.setAngle(Math.atan(slope) * DEG_PER_RAD);
+
+            return this; // For utility
+        },
+
+        setIntercept: function(intercept) {
+            this._intercept = intercept;
+            this.setPositionByOrigin(
+                new fabric.Point(this._centerX, intercept),
+                'center',
+                'center'
+            );
+
+            return this;
         },
 
         toString: function() {
