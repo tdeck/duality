@@ -132,6 +132,7 @@ cg = {
             options.lockScalingY = true;
             options.lockMovementX = true;
             options.selectable = true;
+            options.padding = 2;
 
             // Rotate the line about its center
             options.centerRotation = true;
@@ -153,11 +154,12 @@ cg = {
             //this.setSlope(slope).setIntercept(centerY);
             this.setSlope(slope);
             //this.setIntercept(centerY);
-
+            //TODO
         },
 
         setSlope: function(slope) {
             this.setAngle(Math.atan(slope) * DEG_PER_RAD);
+            this.setCoords();
 
             return this; // For utility
         },
@@ -167,7 +169,8 @@ cg = {
         },
 
         setIntercept: function(intercept) {
-            this.top = intercept
+            this.top = intercept;
+            this.setCoords();
             return this;
         },
 
