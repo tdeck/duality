@@ -3,7 +3,7 @@ var POINT_RADIUS = 4;
 var POINT_COLOR = 'blue';
 
 // Line properties
-var LINE_WIDTH = 2;
+var LINE_WIDTH = 3;
 var LINE_COLOR = 'red';
 
 var DEG_PER_RAD = 360 / (2 * Math.PI);
@@ -43,19 +43,36 @@ cg = {
                 e.x = coords.x;
                 e.y = coords.y;
 
+                // This line was taken from the fabric JS mixin code
+                var isLeftClick  = 'which' in e.e ? e.e.which === 1 : e.e.button === 1;
+
                 // Discriminate hits 
                 var target;
                 if (
                     target =
-                        self.getActiveObject() || // Ignore single object drag
-                        self.getActiveGroup() // Ignore group drag
+                        self.getActiveObject() || // Single object drag
+                        self.getActiveGroup() || // Group drag
+                        self.findTarget(e.e) // Some other target
                 ) {
                     e.target = target; // TODO check this
-                    self.fire('mouse:hit', e);
+                    self.fire(
+                        isLeftClick ? 'mouse:hit' : 'mouse:rhit',
+                        e
+                    );
                 } else {
-                    self.fire('mouse:miss', e);
+                    self.fire(
+                        isLeftClick ? 'mouse:miss' : 'mouse:rmiss',
+                        e
+                    );
                 }
             });
+            
+            // Disable the context menu so we can use right clicks
+            var raw_canvas = this.upperCanvasEl;
+            raw_canvas.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            }, false);
         },
 
         // Override
@@ -151,7 +168,6 @@ cg = {
             );
 
             this._centerX = centerX;
-            //this.setSlope(slope).setIntercept(centerY);
             this.setSlope(slope);
             //this.setIntercept(centerY);
             //TODO

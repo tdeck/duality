@@ -1,0 +1,3 @@
+- You can't add lines directly
+- You can only move lines by changing the affine and slope, not by arbitrarily dragging them around (because I'm lazy).
+- Group selection doesn't fire the correct events and has thus been disabled for now

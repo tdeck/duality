@@ -6,29 +6,30 @@
         <link rel="stylesheet" type="text/css" href="style.css" />
     </head>
     <body>
-        <div id="primal-wrapper">
-            <h2>Primal plane</h2>
+        <div class="plane-wrapper">
+            <h2>primal plane</h2>
             <canvas id="primal-plane"></canvas>
             <br>
-            <select id="primal-color">
-                <option value="red" style="color: red">RED</option>
-                <option value="green" style="color: green">GREEN</option>
-                <option value="blue" style="color: blue">BLUE</option>
-            </select>
+            <div 
+                class = "color-picker" 
+                id="primal-color" 
+            /></div>
+            </div>
         </div>
-        <div id="dual-wrapper">
-            <h2>Dual plane</h2>
+        <div class="plane-wrapper">
+            <h2>dual plane</h2>
             <canvas id="dual-plane"></canvas>
             <br>
-            <select id="dual-color">
-                <option value="red" style="color: red">RED</option>
-                <option value="green" style="color: green">GREEN</option>
-                <option value="blue" style="color: blue">BLUE</option>
-            </select>
+            <div 
+                class = "color-picker" 
+                id="dual-color" 
+            /></div>
+            </div>
         </div>
 
-        <script type="text/javascript" src="../fabric.min.js"></script>
+        <script type="text/javascript" src="fabric.min.js"></script>
         <script type="text/javascript" src="primitives.js"></script>
+        <script type="text/javascript" src="picker.js"></script>
         <script type="text/javascript" src="code.js"></script>
     </body>
 </html>

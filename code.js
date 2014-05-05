@@ -10,8 +10,14 @@ var dual_color_picker;
 
 document.body.onload = function() {
     // Grab refs to the color pickers
-    primal_color_picker = document.getElementById('primal-color');
-    dual_color_picker = document.getElementById('dual-color');
+    primal_color_picker = new ColorBox(
+        document.getElementById('primal-color'),
+        color_options
+    );
+    dual_color_picker = new ColorBox(
+        document.getElementById('dual-color'),
+        color_options
+    );
 
     // Set up the canvases
     primal_plane = new cg.Plane(
@@ -42,7 +48,7 @@ document.body.onload = function() {
     primal_plane.calcOffset();
     dual_plane.calcOffset();
 
-
+    // Primal plane event listeners
     primal_plane.on('mouse:miss', function(e) {
         add_point_and_line(e.x, e.y, primal_plane, dual_plane);
     });
@@ -55,6 +61,10 @@ document.body.onload = function() {
         translation_handler(e, primal_plane);
     });
 
+    primal_plane.on('mouse:rhit', delete_handler);
+
+
+    // Dual plane event listeners
     dual_plane.on('mouse:miss', function(e) {
         add_point_and_line(e.x, e.y, dual_plane, primal_plane);
     });
@@ -66,6 +76,8 @@ document.body.onload = function() {
     dual_plane.on('object:rotating', function(e) {
         translation_handler(e, dual_plane);
     });
+
+    dual_plane.on('mouse:rhit', delete_handler);
 }
 
 function translation_handler(e, plane) {
@@ -77,6 +89,17 @@ function translation_handler(e, plane) {
     }
 }
 
+function delete_handler(e) {
+    var key = e.target.key;
+    
+    var pair = mapping[key];
+    
+    pair.point_plane.remove(pair.point);
+    pair.line_plane.remove(pair.line);
+
+    pair.point_plane.renderAll();
+    pair.line_plane.renderAll();
+}
 
 function add_point_and_line(x, y, point_plane, line_plane) {
     var point = new cg.Point(x, y, {
@@ -135,6 +158,9 @@ function moved_line(line) {
 
     point.setLeft(point_plane._nativeX(slope));
     point.setTop(point_plane._nativeY(-intercept));
+
+    // This probably shouldn't be needed, but it seems like it is
+    point.setCoords();
 
     point_plane.renderAll();
 }
