@@ -1,15 +1,15 @@
 Point-Line Duality
 ==================
 
+## [Hosted demo](http://students.cec.wustl.edu/~tdeck/duality/)
+
 What is duality?
 ----------------
 [Duality](http://en.wikipedia.org/wiki/Duality_%28projective_geometry%29) is the
 geometric concept of defining a mapping between points in one plane 
 (the "primal plane") and lines in another (the "dual plane"). The basic idea
-is that a point ![(a,b)](http://www.sciweavers.org/tex2img.php?eq=%28a%2C%20b%29&bc=White&fc=Black&im=jpg&fs=12&ff=arev&edit=0)
-maps to a line ![y = ax - b](http://www.sciweavers.org/tex2img.php?eq=y%20%3D%20ax%20-%20b&bc=White&fc=Black&im=jpg&fs=12&ff=arev&edit=0)
-in the dual plane, and vice-versa (![y = ax + b <-> (a, -b)](http://www.sciweavers.org/tex2img.php?eq=y%20%3D%20ax%20%2B%20b%20%20%5Cleftrightarrow%20%28a%2C%20-b%29&bc=White&fc=Black&im=jpg&fs=12&ff=arev&edit=0)). Believe it or not,
-this is both cool and useful!
+is that a point (a, b) maps to a line y = ax - b in the dual plane, and vice-versa 
+(y = ax + b <-> (a, -b)) Believe it or not, this is both cool and useful!
 
 What is the demo?
 -----------------
