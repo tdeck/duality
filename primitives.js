@@ -174,7 +174,8 @@ cg = {
         },
 
         setSlope: function(slope) {
-            this.setAngle(Math.atan(slope) * DEG_PER_RAD);
+            console.log("Slope", slope);
+            this.setAngle(- Math.atan(slope) * DEG_PER_RAD);
             this.setCoords();
 
             return this; // For utility
