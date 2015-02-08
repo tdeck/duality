@@ -40,3 +40,5 @@ with Fabric enough to make it handle plane objects the way I wanted it, then
 wrote my own custom color picker. (Yes, I know there are a million out there,
 but I wanted one with a few discrete color choices.) The JS is pretty standard;
 don't expect it to work on your old version of IE or Mosaic or WorldWideWeb.
+
+This code is released under the terms of the [MIT License](http://troy.mit-license.org).
