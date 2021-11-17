@@ -156,7 +156,7 @@ function moved_line(line) {
     var intercept = line_plane._planeY(line.getIntercept());
     console.log("Slope:", slope);
 
-    point.setLeft(point_plane._nativeX(slope));
+    point.setLeft(point_plane._nativeX(-slope));
     point.setTop(point_plane._nativeY(-intercept));
 
     // This probably shouldn't be needed, but it seems like it is
